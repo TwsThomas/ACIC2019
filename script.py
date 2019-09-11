@@ -2,7 +2,9 @@ import numpy as np
 import pandas as pd
 import os
 
-def try_process(folder='data/', data_id=1):
+from joblib import Parallel, delayed
+
+def try_process(data_id=1, folder='data/'):
 
     data_name = 'testdataset{}.csv'.format(data_id)
     out_name = 'testdataset{}_res.txt'.format(data_id)
@@ -16,4 +18,6 @@ def try_process(folder='data/', data_id=1):
     np.savetxt(output_path, res)
   
 
-try_process()
+
+Parallel(n_jobs=2)(delayed(try_process)(i) 
+                   for i in range(1,3))
