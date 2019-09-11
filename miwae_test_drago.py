@@ -209,8 +209,6 @@ def run_main(id):
   mse_train=np.array([])
   bs = 64 # batch size
   n_epochs = 602
-  n_epochs = 2
-  print('222'*100)
   xhat = np.copy(xhat_0) # This will be out imputed data matrix
   x_mul_imp = np.tile(xhat_0,[num_samples_xmul,1,1])
   zhat = np.zeros([n,d]) # low-dimensional representations

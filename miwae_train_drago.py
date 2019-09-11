@@ -20,6 +20,7 @@ from sklearn.experimental import enable_iterative_imputer
 from sklearn.linear_model import BayesianRidge
 from sklearn.impute import IterativeImputer
 from sklearn.impute import SimpleImputer
+import os
 
 def mse(xhat,xtrue,mask): # MSE function for imputations
     xhat = np.array(xhat)
@@ -40,6 +41,10 @@ h = 128 # number of hidden units (same for all MLPs)
 # out_folder = "gdrive/My\ Drive/Colab\ Notebooks/data/ACIC2019/"+dim+"_dimensional_datasets/results/" # folder to store resulting files
 in_folder = "data/"+dim+"_dimensional_datasets/"
 out_folder = "data/"+dim+"_dimensional_datasets/results/" # folder to store resulting files
+try:
+    os.mkdir(out_folder)
+except FileExistsError:
+    pass
 
 num_samples_xmul = 50 # number of imputations for multiple imputation
 num_samples_zmul = 50 # number of draws from the posterior Z | X^*
