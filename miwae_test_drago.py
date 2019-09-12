@@ -28,41 +28,42 @@ def mse(xhat,xtrue,mask): # MSE function for imputations
     return np.mean(np.power(xhat-xtrue,2)[~mask])
 
 
-##########
-
-dim = "low" # high or low dimensional dataset
-
-add_mask = False
-
-d = 10 # default guess for dimension of the latent space
-h = 128 # number of hidden units (same for all MLPs)
 
 ## modified /
-# in_folder = "/content/gdrive/My Drive/Colab Notebooks/data/ACIC2019/TestDatasets_"+dim+"D/"
-# out_folder = "gdrive/My\ Drive/Colab\ Notebooks/data/ACIC2019/TestDatasets_"+dim+"D/results/" # folder to store resulting files
-in_folder = "data/TestDatasets_"+dim+"D/"
-out_folder = "data/TestDatasets_"+dim+"D/results/" # folder to store resulting files
-try:
-    os.mkdir(out_folder)
-except FileExistsError:
-    pass
-
-
-num_samples_xmul = 50 # number of imputations for multiple imputation
-num_samples_zmul = 50 # number of draws from the posterior Z | X^*
-## modified /
-# n_sampel line 286
-# comment all !cp
-##########
-
-if dim == "high":
-  dim_text = "highDim_testdataset" 
-else:
-  dim_text = "testdataset"
+def run_main_test(id, dim = "low"):
+  ##########
   
-## modified /
-def run_main(id):
-
+  
+  add_mask = False
+  
+  d = 10 # default guess for dimension of the latent space
+  h = 128 # number of hidden units (same for all MLPs)
+  
+  ## modified /
+  # in_folder = "/content/gdrive/My Drive/Colab Notebooks/data/ACIC2019/TestDatasets_"+dim+"D/"
+  # out_folder = "gdrive/My\ Drive/Colab\ Notebooks/data/ACIC2019/TestDatasets_"+dim+"D/results/" # folder to store resulting files
+  in_folder = "data/TestDatasets_"+dim+"D/"
+  out_folder = "data/TestDatasets_"+dim+"D/results/" # folder to store resulting files
+  try:
+      os.mkdir(out_folder)
+  except FileExistsError:
+      pass
+  
+  
+  num_samples_xmul = 50 # number of imputations for multiple imputation
+  num_samples_zmul = 50 # number of draws from the posterior Z | X^*
+  ## modified /
+  # n_sampel line 286 
+  # comment cp
+  
+  ###### 
+  
+  if dim == "high":
+    dim_text = "highDim_testdataset" 
+  else:
+    dim_text = "testdataset"
+    
+    
   data = np.array(pd.read_csv(in_folder+dim_text+str(id)+".csv", low_memory=False))[:,2:]
   print(data.shape)
 
@@ -297,9 +298,3 @@ def run_main(id):
       str_5 = dim_text+str(id)+"_h"+str(h)+"_d"+str(d)+"_propNA"+"{:3.2f}".format(perc_miss)+"_zhat_m"+str(i)+".csv"
     # !cp $str_5 $out_folder
 
-## modified /
-for id in range(1,9):
-  print('* * '*10)
-  print('Run main id:', id)
-  print('* * '*10)
-  run_main(id)

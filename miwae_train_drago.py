@@ -28,31 +28,30 @@ def mse(xhat,xtrue,mask): # MSE function for imputations
     return np.mean(np.power(xhat-xtrue,2)[~mask])
 
 
-##########
-
-dim = "low" # high or low dimensional dataset
-
-add_mask = False
-
-d = 10 # default guess for dimension of the latent space
-h = 128 # number of hidden units (same for all MLPs)
-
-# in_folder = "/content/gdrive/My Drive/Colab Notebooks/data/ACIC2019/"+dim+"_dimensional_datasets/"
-# out_folder = "gdrive/My\ Drive/Colab\ Notebooks/data/ACIC2019/"+dim+"_dimensional_datasets/results/" # folder to store resulting files
-in_folder = "data/"+dim+"_dimensional_datasets/"
-out_folder = "data/"+dim+"_dimensional_datasets/results/" # folder to store resulting files
-try:
-    os.mkdir(out_folder)
-except FileExistsError:
-    pass
-
-num_samples_xmul = 50 # number of imputations for multiple imputation
-num_samples_zmul = 50 # number of draws from the posterior Z | X^*
-  
-##########
 
   
-def run_main(id):
+def run_main_train(id, dim = "low"):
+  ##########
+  # variables
+  add_mask = False
+  
+  d = 10 # default guess for dimension of the latent space
+  h = 128 # number of hidden units (same for all MLPs)
+  
+  # in_folder = "/content/gdrive/My Drive/Colab Notebooks/data/ACIC2019/"+dim+"_dimensional_datasets/"
+  # out_folder = "gdrive/My\ Drive/Colab\ Notebooks/data/ACIC2019/"+dim+"_dimensional_datasets/results/" # folder to store resulting files
+  in_folder = "data/"+dim+"_dimensional_datasets/"
+  out_folder = "data/"+dim+"_dimensional_datasets/results/" # folder to store resulting files
+  try:
+      os.mkdir(out_folder)
+  except FileExistsError:
+      pass
+  
+  num_samples_xmul = 50 # number of imputations for multiple imputation
+  num_samples_zmul = 50 # number of draws from the posterior Z | X^*
+  
+  ##########
+
   data = np.array(pd.read_csv(in_folder+dim+str(id)+".csv", low_memory=False))[:,2:]
   print(data.shape)
 
@@ -287,8 +286,3 @@ def run_main(id):
     # !cp $str_5 $out_folder
 
 
-for id in range(1,3201):
-  print('* * '*10)
-  print('Run main id:', id)
-  print('* * '*10)
-  run_main(id)
