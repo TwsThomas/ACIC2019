@@ -30,43 +30,61 @@ def mse(xhat,xtrue,mask): # MSE function for imputations
 
 
 ## modified /
-def run_main_test(id, dim = "low"):
+def run_main_test(id_data = 0, dim = "low", d=10, h=128, add_mask=False,
+                  num_samples_zmul=50, num_samples_xmul=50, perc_miss = 0.1,
+                  in_folder = "data/TestDatasets_nodim_D/",
+                  out_folder = "data/TestDatasets_nodim_D/results/", folder = 'test'):
   ##########
+  id = id_data
+  print(folder, in_folder, out_folder)
+  print('run_main_test', id_data, dim)
   
   
-  add_mask = False
+  # add_mask = False
   
-  d = 10 # default guess for dimension of the latent space
-  h = 128 # number of hidden units (same for all MLPs)
+  # d = 10 # default guess for dimension of the latent space
+  # h = 128 # number of hidden units (same for all MLPs)
   
   ## modified /
   # in_folder = "/content/gdrive/My Drive/Colab Notebooks/data/ACIC2019/TestDatasets_"+dim+"D/"
   # out_folder = "gdrive/My\ Drive/Colab\ Notebooks/data/ACIC2019/TestDatasets_"+dim+"D/results/" # folder to store resulting files
-  in_folder = "data/TestDatasets_"+dim+"D/"
-  out_folder = "data/TestDatasets_"+dim+"D/results/" # folder to store resulting files
+  # in_folder = "data/TestDatasets_"+dim+"D/"
+  # out_folder = "data/TestDatasets_"+dim+"D/results/" # folder to store resulting files
+
+  # in_folder = "data/"+dim+"_dimensional_datasets/"
+  # out_folder = "data/"+dim+"_dimensional_datasets/results/" # folder to store resulting files
+  try:
+      os.mkdir(out_folder)
+  except FileExistsError:
+      pass
+
   try:
       os.mkdir(out_folder)
   except FileExistsError:
       pass
   
   
-  num_samples_xmul = 50 # number of imputations for multiple imputation
-  num_samples_zmul = 50 # number of draws from the posterior Z | X^*
+  # num_samples_xmul = 50 # number of imputations for multiple imputation
+  # num_samples_zmul = 50 # number of draws from the posterior Z | X^*
   ## modified /
   # n_sampel line 286 
   # comment cp
   
   ###### 
   
-  if dim == "high":
-    dim_text = "highDim_testdataset" 
+  if folder == 'test':
+    if dim == "high":
+      dim_text = "highDim_testdataset" 
+    else:
+      dim_text = "testdataset"
+  elif folder == "train":
+    dim_text = dim
   else:
-    dim_text = "testdataset"
-    
-    
-  data = np.array(pd.read_csv(in_folder+dim_text+str(id)+".csv", low_memory=False))[:,2:]
-  print(data.shape)
+    raise "folder misspelled (" + str(folder) + ")"
 
+  data = np.array(pd.read_csv(in_folder+dim_text+str(id)+".csv", low_memory=False))[:,2:]
+  # data = np.array(pd.read_csv(in_folder+dim_text+str(id)+".csv", low_memory=False))[:,2:]
+  print(data.shape)
   ##########
 
   xfull = (data - np.mean(data,0))/np.std(data,0)
@@ -81,7 +99,7 @@ def run_main_test(id, dim = "low"):
   np.random.seed(1234)
   tf.set_random_seed(1234)
 
-  perc_miss = 0.1 # 10% of missing data
+  # perc_miss = 0.1 # 10% of missing data
   xmiss = np.copy(xfull)
   xmiss_flat = xmiss.flatten()
   miss_pattern = np.random.choice(n*p, np.floor(n*p*perc_miss).astype(np.int), replace=False)
@@ -289,7 +307,7 @@ def run_main_test(id, dim = "low"):
     
   zhat_mul_rescaled = zhat_mul
   ## modified /
-  for i in range(num_samples_xmul):
+  for i in range(num_samples_zmul):
     if add_mask:
       np.savetxt(out_folder+dim_text+str(id)+"_h"+str(h)+"_d"+str(d)+"_mask"+"_propNA"+"{:3.2f}".format(perc_miss)+"_zhat_m"+str(i)+".csv", zhat_mul_rescaled[i,:,:], delimiter=";")
       str_5 = dim_text+str(id)+"_h"+str(h)+"_d"+str(d)+"_mask"+"_propNA"+"{:3.2f}".format(perc_miss)+"_zhat_m"+str(i)+".csv"
